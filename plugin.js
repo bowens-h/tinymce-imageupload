@@ -4,14 +4,14 @@ import pluginAPI from "./js/main.js";
 (function () {
     "use strict";
     const global = tinymce.util.Tools.resolve("tinymce.PluginManager");
-    const imgList = { length: 0 };
+    var imgList = { length: 0 };
 
     function open (editor) {
-
+      imgList = { length: 0 };
         editor.windowManager.open({
             title: "本地图片上传",
-            width: 500,
-            height: 400,
+            width: 600,
+            height: 300,
             html: `
                 ${style}
                 <div class="mce-box-content" id="mceBoxContent">
@@ -24,8 +24,10 @@ import pluginAPI from "./js/main.js";
                 text: 'Ok',
                 subtype: 'primary',
                 onclick: function (e) {
-                    pluginAPI.uploadpic(editor, imgList, tinyMCE.activeEditor.getParam('imageupload_url'), tinyMCE.activeEditor.getParam('imageupload_converCb'));
-                    editor.windowManager.close();
+                    if (imgList.length) {
+                      pluginAPI.uploadpic(e, editor, imgList, tinyMCE.activeEditor.getParam('imageupload_url'), tinyMCE.activeEditor.getParam('imageupload_converCb'));
+                    }
+                    // editor.windowManager.close();
                 }
             }, {
                 text: 'Close',
@@ -69,9 +71,9 @@ import pluginAPI from "./js/main.js";
     function componentRegister (editor) {
         editor.addButton("imageupload", {
             title: "上传图片",
-            icon: "image",
+            // icon: "image",
             cmd: "mceImageUpload",
-            // image : url + '/img/icon.png'
+            image : '/image/images.png'
         });
         editor.addMenuItem("imageupload", {
             icon: "image",

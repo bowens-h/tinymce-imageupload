@@ -115,7 +115,12 @@ function parentNodes(target, selector) {
  * @param {string} imageUploadUrl 接收上传图片的服务器url
  * @param {function} convertCb 响应数据的数据结构转换函数
  */
-function uploadpic(editor, imgList, imageUploadUrl, convertCb) {
+function uploadpic(evt, editor, imgList, imageUploadUrl, convertCb) {
+  var global$5 = tinymce.util.Tools.resolve('tinymce.ui.Factory');
+  var Throbber = global$5.get('Throbber');
+  var rootControl = evt.control.rootControl;
+  var throbber = new Throbber(rootControl.getEl());
+  throbber.show();
 
     /* eslint-disable no-undef */
     let param = new FormData()  // 创建form对象
@@ -123,7 +128,7 @@ function uploadpic(editor, imgList, imageUploadUrl, convertCb) {
     delete files['length'];
     for(let key in files) {
         const file = files[key];
-        param.append('file', file, file.name)  // 通过append向form对象添加数据
+        param.append('file[]', file, file.name)  // 通过append向form对象添加数据
     }
 
     let config = {
@@ -131,6 +136,7 @@ function uploadpic(editor, imgList, imageUploadUrl, convertCb) {
     }
     // 添加请求头
     axios.post(imageUploadUrl, param, config).then(res => {
+      throbber.hide();
         const response = typeof convertCb == 'function' && convertCb(res) || res;
         if (typeof response != "object" || response == null || typeof response.error == 'undefined') {
             alert('上传出错');
@@ -152,7 +158,7 @@ function uploadpic(editor, imgList, imageUploadUrl, convertCb) {
                         let tpl = '<img src="%s" />';
                         editor.insertContent(tpl.replace('%s', item));
                     });
-
+                  editor.windowManager.close();
                     editor.focus();
                 } else {
                     alert('后端数据错误');

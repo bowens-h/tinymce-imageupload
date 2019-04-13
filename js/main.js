@@ -180,8 +180,11 @@ function uploadpic(evt, editor, imgList, imageUploadUrl, convertCb) {
         })
         .catch(error => {
             if (error.response.status === 422) {
-                // console.log(error.response.data.errors['file.0'][0])
-                alert(error.response.data.errors['file.0'][0])
+                for (let item in error.response.data.errors) {
+                    // console.log(item, error.response.data.errors[item]);
+                    alert(error.response.data.errors[item][0])
+                    break
+                }
             } else {
                 alert('网络错误，请重试')
             }

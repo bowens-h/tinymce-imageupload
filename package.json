@@ -1,6 +1,6 @@
 {
     "name": "tinymce-uploadimages",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "tinymce 图片上传插件",
     "main": "index.js",
     "scripts": {

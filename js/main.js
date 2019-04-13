@@ -6,8 +6,8 @@ import axios from 'axios'
  * @param {*} options dom属性
  */
 function createElem(name, options) {
-    const elem = document.createElement(name);
-    elem.className = options && options.className;
+    const elem = document.createElement(name)
+    elem.className = options && options.className
     return elem
 }
 
@@ -18,57 +18,58 @@ function createElem(name, options) {
  * @param {*} $contain 指定将预览图片添加到哪个容器
  */
 function imagePreview(files, orignalLen, $contain) {
-    let frame = document.createDocumentFragment();
-    for (let i = 0; i < files.length; i++) { //预览新添加的图片
-        let file = files[i];
-        let imageType = /^image\//;
+    let frame = document.createDocumentFragment()
+    for (let i = 0; i < files.length; i++) {
+        //预览新添加的图片
+        let file = files[i]
+        let imageType = /^image\//
 
         if (!imageType.test(file.type)) {
-            alert("请选择图片类型上传");
-            continue;
+            alert('请选择图片类型上传')
+            continue
         }
 
-        let imgOutBox = createElem("span", {
-            className: "prev-img-out-box"
-        });
+        let imgOutBox = createElem('span', {
+            className: 'prev-img-out-box'
+        })
 
-        let imgBox = createElem("div", {
-            className: "prev-img-box"
-        });
+        let imgBox = createElem('div', {
+            className: 'prev-img-box'
+        })
 
-        let handleHover = createElem("span", {
-            className: "handle-hover"
-        });
+        let handleHover = createElem('span', {
+            className: 'handle-hover'
+        })
 
-        let delBtn = createElem("i", {
-            className: "del-btn"
-        });
+        let delBtn = createElem('i', {
+            className: 'del-btn'
+        })
 
-        delBtn.setAttribute("index", orignalLen + i)
+        delBtn.setAttribute('index', orignalLen + i)
 
-        let img = createElem("img", {
-            className: "prev-img"
-        });
+        let img = createElem('img', {
+            className: 'prev-img'
+        })
 
-        handleHover.appendChild(delBtn);
-        imgBox.appendChild(handleHover);
-        imgBox.appendChild(img);
-        imgOutBox.appendChild(imgBox);
-        frame.appendChild(imgOutBox);
+        handleHover.appendChild(delBtn)
+        imgBox.appendChild(handleHover)
+        imgBox.appendChild(img)
+        imgOutBox.appendChild(imgBox)
+        frame.appendChild(imgOutBox)
 
-        img.file = file;
+        img.file = file
 
-        let reader = new FileReader();
-        reader.onload = (function (aImg) {
-            return function (e) {
-                aImg.src = e.target.result;
-            };
-        })(img);
+        let reader = new FileReader()
+        reader.onload = (function(aImg) {
+            return function(e) {
+                aImg.src = e.target.result
+            }
+        })(img)
 
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file)
     }
 
-    $contain.prepend(frame);
+    $contain.prepend(frame)
 }
 
 /**
@@ -79,13 +80,16 @@ function imagePreview(files, orignalLen, $contain) {
  * @param {function} cb 事件处理函数
  */
 function on(elem, targetSelect, event, cb) {
-    targetSelect = targetSelect.replace(/[.#]/, '');
+    targetSelect = targetSelect.replace(/[.#]/, '')
 
-    elem.addEventListener(event, (e) => {
-        if(e.target.className.indexOf(targetSelect) >= 0 || e.target.id == targetSelect) {
-            cb(e);
+    elem.addEventListener(event, e => {
+        if (
+            e.target.className.indexOf(targetSelect) >= 0 ||
+            e.target.id == targetSelect
+        ) {
+            cb(e)
         }
-    });
+    })
 }
 
 /**
@@ -94,16 +98,19 @@ function on(elem, targetSelect, event, cb) {
  * @param {string} selector 指定父节点选择器，可以是类名或id值，无需一定用.或#指明使用的选择器是类还是id
  */
 function parentNodes(target, selector) {
-    selector = selector.replace(/[.#]/, '');
+    selector = selector.replace(/[.#]/, '')
 
-    if(target.parentNode.className.indexOf(selector) >= 0 || target.parentNode.id == selector) {
-        return target.parentNode;
+    if (
+        target.parentNode.className.indexOf(selector) >= 0 ||
+        target.parentNode.id == selector
+    ) {
+        return target.parentNode
     } else {
-        if(target.parentNode) {
+        if (target.parentNode) {
             return parentNodes(target.parentNode, selector)
         } else {
-            console.error('未找到指定父元素');
-            return;
+            console.error('未找到指定父元素')
+            return
         }
     }
 }
@@ -116,56 +123,70 @@ function parentNodes(target, selector) {
  * @param {function} convertCb 响应数据的数据结构转换函数
  */
 function uploadpic(evt, editor, imgList, imageUploadUrl, convertCb) {
-  var global$5 = tinymce.util.Tools.resolve('tinymce.ui.Factory');
-  var Throbber = global$5.get('Throbber');
-  var rootControl = evt.control.rootControl;
-  var throbber = new Throbber(rootControl.getEl());
-  throbber.show();
+    var global$5 = tinymce.util.Tools.resolve('tinymce.ui.Factory')
+    var Throbber = global$5.get('Throbber')
+    var rootControl = evt.control.rootControl
+    var throbber = new Throbber(rootControl.getEl())
+    throbber.show()
 
     /* eslint-disable no-undef */
-    let param = new FormData()  // 创建form对象
-    const files = imgList;
-    delete files['length'];
-    for(let key in files) {
-        const file = files[key];
-        param.append('file[]', file, file.name)  // 通过append向form对象添加数据
+    let param = new FormData() // 创建form对象
+    const files = Object.assign({}, imgList)
+    delete files['length']
+    for (let key in files) {
+        const file = files[key]
+        param.append('file[]', file, file.name) // 通过append向form对象添加数据
     }
 
     let config = {
-        headers: {'Content-Type': 'multipart/form-data'}
+        headers: { 'Content-Type': 'multipart/form-data' }
     }
     // 添加请求头
-    axios.post(imageUploadUrl, param, config).then(res => {
-      throbber.hide();
-        const response = typeof convertCb == 'function' && convertCb(res) || res;
-        if (typeof response != "object" || response == null || typeof response.error == 'undefined') {
-            alert('上传出错');
-        }
-        else {
-            if (response.error) {
-                switch (response.error) {
-                    case ("filetype"):
-                        alert('请选择图片格式的文件上传');
-                        break;
-                    default:
-                        alert('未知错误');
-                        break;
-                }
-            }
-            else {
-                if (typeof response.pathList != 'undefined') {
-                    response.pathList.forEach(item => {
-                        let tpl = '<img src="%s" />';
-                        editor.insertContent(tpl.replace('%s', item));
-                    });
-                  editor.windowManager.close();
-                    editor.focus();
+    axios
+        .post(imageUploadUrl, param, config)
+        .then(res => {
+            throbber.hide()
+            const response =
+                (typeof convertCb == 'function' && convertCb(res)) || res
+            if (
+                typeof response != 'object' ||
+                response == null ||
+                typeof response.error == 'undefined'
+            ) {
+                alert('上传出错')
+            } else {
+                if (response.error) {
+                    switch (response.error) {
+                        case 'filetype':
+                            alert('请选择图片格式的文件上传')
+                            break
+                        default:
+                            alert('未知错误')
+                            break
+                    }
                 } else {
-                    alert('后端数据错误');
+                    if (typeof response.pathList != 'undefined') {
+                        response.pathList.forEach(item => {
+                            let tpl = '<img src="%s" />'
+                            editor.insertContent(tpl.replace('%s', item))
+                        })
+                        editor.windowManager.close()
+                        editor.focus()
+                    } else {
+                        alert('后端数据错误')
+                    }
                 }
             }
-        }
-    })
+        })
+        .catch(error => {
+            if (error.response.status === 422) {
+                // console.log(error.response.data.errors['file.0'][0])
+                alert(error.response.data.errors['file.0'][0])
+            } else {
+                alert('网络错误，请重试')
+            }
+            throbber.hide()
+        })
 }
 
 export default {

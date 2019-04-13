@@ -1,94 +1,107 @@
-import style from "./css/style.js";
-import pluginAPI from "./js/main.js";
+import style from './css/style.js'
+import pluginAPI from './js/main.js'
+;(function() {
+    'use strict'
+    const global = tinymce.util.Tools.resolve('tinymce.PluginManager')
+    var imgList = { length: 0 }
 
-(function () {
-    "use strict";
-    const global = tinymce.util.Tools.resolve("tinymce.PluginManager");
-    var imgList = { length: 0 };
-
-    function open (editor) {
-      imgList = { length: 0 };
+    function open(editor) {
+        imgList = { length: 0 }
         editor.windowManager.open({
-            title: "本地图片上传",
+            title: '本地图片上传',
             width: 600,
             height: 300,
             html: `
                 ${style}
                 <div class="mce-box-content" id="mceBoxContent">
                     <label class="add-img">
-                        <input type="file" id="imgFile" name="file" multiple="multiple" hidden>
+                        <input type="file" id="imgFile" name="file" multiple="multiple" accept="image/*" hidden>
                     </label>
                 </div>
             `,
-            buttons: [{
-                text: 'Ok',
-                subtype: 'primary',
-                onclick: function (e) {
-                    if (imgList.length) {
-                      pluginAPI.uploadpic(e, editor, imgList, tinyMCE.activeEditor.getParam('imageupload_url'), tinyMCE.activeEditor.getParam('imageupload_converCb'));
+            buttons: [
+                {
+                    text: 'Ok',
+                    subtype: 'primary',
+                    onclick: function(e) {
+                        if (imgList.length) {
+                            pluginAPI.uploadpic(
+                                e,
+                                editor,
+                                imgList,
+                                tinyMCE.activeEditor.getParam(
+                                    'imageupload_url'
+                                ),
+                                tinyMCE.activeEditor.getParam(
+                                    'imageupload_converCb'
+                                )
+                            )
+                        }
+                        // editor.windowManager.close();
                     }
-                    // editor.windowManager.close();
+                },
+                {
+                    text: 'Close',
+                    onclick: function() {
+                        editor.windowManager.close()
+                    }
                 }
-            }, {
-                text: 'Close',
-                onclick: function () {
-                    editor.windowManager.close();
-                }
-            }]
-        });
-    };
+            ]
+        })
+    }
 
     function commandRegister(editor) {
-        editor.addCommand("mceImageUpload", function () {
+        editor.addCommand('mceImageUpload', function() {
+            open(editor)
 
-            open(editor);
+            const $imgFile = document.getElementById('imgFile')
+            const $mceBoxContent = document.getElementById('mceBoxContent')
 
-            const $imgFile = document.getElementById("imgFile");
-            const $mceBoxContent = document.getElementById("mceBoxContent");
+            $imgFile.addEventListener('change', e => {
+                const filesLise = Array.prototype.slice.call(e.target.files)
+                const orignalLen = imgList.length
 
-            $imgFile.addEventListener("change", (e) => {
-                const filesLise = Array.prototype.slice.call(e.target.files);
-                const orignalLen = imgList.length;
-
-                pluginAPI.imagePreview(filesLise, orignalLen, $mceBoxContent);
+                pluginAPI.imagePreview(filesLise, orignalLen, $mceBoxContent)
 
                 filesLise.forEach((item, index) => {
-                    imgList[imgList.length] = item;
-                    imgList.length = imgList.length + 1;
-                });
+                    imgList[imgList.length] = item
+                    imgList.length = imgList.length + 1
+                })
             })
 
-            pluginAPI.on($mceBoxContent, "del-btn", "click", (e) => {
-                const elemIndex = e.target.getAttribute("index");
-                const parentNode = pluginAPI.parentNodes(e.target, 'prev-img-out-box');
-                parentNode.remove();
-                delete imgList[elemIndex];
-                imgList.length = imgList.length - 1;
+            pluginAPI.on($mceBoxContent, 'del-btn', 'click', e => {
+                const elemIndex = e.target.getAttribute('index')
+                const parentNode = pluginAPI.parentNodes(
+                    e.target,
+                    'prev-img-out-box'
+                )
+                parentNode.remove()
+                delete imgList[elemIndex]
+                imgList.length = imgList.length - 1
             })
-        });
-    };
+        })
+    }
 
-    function componentRegister (editor) {
-        editor.addButton("imageupload", {
-            title: "上传图片",
+    function componentRegister(editor) {
+        editor.addButton('imageupload', {
+            title: '上传图片',
             // icon: "image",
-            cmd: "mceImageUpload",
-            image : '/image/images.png'
-        });
-        editor.addMenuItem("imageupload", {
-            icon: "image",
-            context: "insert",
-            cmd: "mceImageUpload"
-        });
-    };
+            cmd: 'mceImageUpload',
+            image: '/image/images.png'
+        })
+        editor.addMenuItem('imageupload', {
+            icon: 'image',
+            context: 'insert',
+            cmd: 'mceImageUpload'
+        })
+    }
 
-    global.add("imageupload", function (editor) {
-        componentRegister(editor);
-        commandRegister(editor);
-    });
+    global.add('imageupload', function(editor) {
+        componentRegister(editor)
+        commandRegister(editor)
+    })
 
     function Plugin() {}
 
-    return Plugin;
-
+    return Plugin
 })()

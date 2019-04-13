@@ -1,27 +1,19 @@
 {
-    "name": "tinymce-imageupload",
+    "name": "tinymce-uploadimages",
     "version": "1.0.2",
-    "description": "tinymce富文本图片上传插件",
+    "description": "tinymce 图片上传插件",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/x-shadow-x/tinymce-imageupload.git"
+        "url": "git+https://github.com/bowens-h/tinymce-imageupload.git"
     },
-    "keywords": [
-        "tinymce",
-        "imageupload",
-        "图片上传"
-    ],
-    "author": "junyanLiu",
+    "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/x-shadow-x/tinymce-imageupload/issues"
+        "url": "https://github.com/bowens-h/tinymce-imageupload/issues"
     },
-    "homepage": "https://github.com/x-shadow-x/tinymce-imageupload#readme",
-    "devDependencies": {
-        "axios": "^0.18.0"
-    }
+    "homepage": "https://github.com/bowens-h/tinymce-imageupload#readme"
 }
